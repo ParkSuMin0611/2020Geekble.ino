@@ -1,0 +1,50 @@
+#include <DFRobotDFPlayerMini.h>
+
+#include <Servo.h> 
+#include <DFRobotDFPlayerMini.h>
+#include <SoftwareSerial.h>
+SoftwareSerial MP3Module(11, 10);
+DFRobotDFPlayerMini MP3Player;
+
+int motor = 32;    // 서보모터 핀번호 
+int value;        // 원형 토글스위치의 값
+int angle = 0;    // 서보모터 각도 
+bool isOn = false;
+Servo servo; 
+
+void setup() {
+  Serial.begin(9600); //시리얼 통신, 속도는 9600
+
+  servo.attach(motor);  //모터 시작
+  pinMode(motor,OUTPUT);  //모터 출력
+  pinMode(8, INPUT);
+  servo.write(0);
+    
+  MP3Module.begin(9600);
+  if (!MP3Player.begin(MP3Module)) {}
+  delay(1);
+  MP3Player.volume(30);
+}
+
+void loop() {
+  value = digitalRead(8);  // 토글 스위치의 값 읽기 
+  Serial.println(angle);
+  
+  if(value == HIGH && isOn == false){
+    isOn = true;
+    MP3Player.play(5);
+    //delay(3000);
+    
+    angle = 90;
+    servo.write(angle);  // 서모모터 돌려주기
+    //delay(500);
+  }
+  
+  if(value == LOW && isOn == true){
+    isOn = false;
+    angle = 0;
+    servo.write(angle); // 서보모터 돌려주기
+    //delay(500);
+  }
+  delay(100);   // 급격한 서보모터의 움직임을 제한하기 위한 delay값
+}
