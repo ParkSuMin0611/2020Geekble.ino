@@ -1,0 +1,20 @@
+int jj=0;
+int value;
+
+void setup() {
+  pinMode(2,INPUT);
+  Serial.begin(9600);
+}
+
+void loop() {
+  value = digitalRead(2);
+  if (value == HIGH){
+    delay(500);
+    jj = jj+1;
+    Serial.println(jj);
+    if (jj == 30){
+      Serial.println("Crew One's Victory");
+      jj = 0;
+    }
+  }
+}
