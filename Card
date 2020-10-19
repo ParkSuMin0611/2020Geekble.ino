@@ -1,0 +1,107 @@
+#include <DFRobotDFPlayerMini.h>
+
+
+#include <DFRobotDFPlayerMini.h>
+#include <SoftwareSerial.h>
+SoftwareSerial MP3Module(11, 10);
+DFRobotDFPlayerMini MP3Player;
+
+int ledR = 24;
+int ledG = 32;
+int sensor = 40;
+
+unsigned long time_s = 0;
+unsigned long time_e = 0;
+
+boolean isON = false;
+boolean onR = false;
+boolean onG = false;
+
+void setup(){
+  Serial.begin(9600);
+  MP3Module.begin(9600);
+  if (!MP3Player.begin(MP3Module)) {}
+  delay(1);
+  MP3Player.volume(30);
+  
+  pinMode(sensor, INPUT);
+  pinMode(ledG, OUTPUT);
+  pinMode(ledR, OUTPUT);
+}
+
+void loop() {
+  int val = digitalRead(sensor);
+  
+  if(val == HIGH && isON == false) {
+    isON = true;
+    time_s = millis();
+  }
+
+  if(val == LOW && isON == true) {
+    isON = false;
+    unsigned long diff= millis()-time_s;
+    if (diff < 1000) {
+      MP3Player.play(6);
+      if(onG == true)
+      {
+        onG = false;
+        digitalWrite(ledG, LOW);
+      }
+      
+      if(onR == false)
+      {
+        onR = true;
+        digitalWrite(ledR, HIGH);
+        time_e = millis();
+      }
+    }
+    
+    if (diff >= 1000 && diff <= 2000 ) {
+      MP3Player.play(7);
+      if(onR == true) {
+        onR = false;
+        digitalWrite(ledR, LOW);
+      }
+      
+      if(onG == false)
+      {
+        onG = true;
+        digitalWrite(ledG, HIGH);
+        time_e = millis();
+        
+      }
+    } 
+
+    if( diff > 2000 ) {
+      MP3Player.play(6);
+      if(onG == true)
+      {
+        onG = false;
+        digitalWrite(ledG, LOW);
+      }
+      
+      if(onR == false)
+      {
+        onR = true;
+        digitalWrite(ledR, HIGH);
+        time_e = millis();
+      }
+    } 
+  }
+
+  if(val == LOW && isON == false && millis() - time_e > 2000)
+  {
+    if(onR == true) {
+      onR = false;
+      digitalWrite(ledR, LOW);
+    }
+
+    if(onG == true) {
+      onG = false;
+      digitalWrite(ledG, LOW);
+    }
+  
+  }
+  
+  delay(10);
+}
