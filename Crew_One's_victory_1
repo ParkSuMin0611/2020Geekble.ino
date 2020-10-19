@@ -1,0 +1,48 @@
+#include <LiquidCrystal.h>
+#include <LiquidCrystal_I2C.h>
+int jj=0;
+int i=0;
+int value;
+
+LiquidCrystal_I2C lcd(0x27, 20, 4);
+
+byte customChar[8] = {
+  B11111,
+  B11111,
+  B11111,
+  B11111,
+  B11111,
+  B11111,
+  B11111,
+  B11111
+};
+
+void setup() {
+  pinMode(22,INPUT);
+  Serial.begin(9600);
+  lcd.init();
+  lcd.clear();
+  lcd.backlight();
+  lcd.begin(20, 4);
+  lcd.createChar(0, customChar);
+  lcd.home();
+}
+
+void loop() {
+  value = digitalRead(22);
+  if(digitalRead(22)==HIGH){
+    i++;
+    if(i==21){
+      lcd.setCursor(0,1);
+    }
+    lcd.write(byte(0));
+    delay(500);
+    if (i == 2){
+      lcd.clear();
+      lcd.print("!Crew One's Victory!");
+      delay(10000);
+      i = 0;
+      lcd.clear();
+    }
+  }
+}
