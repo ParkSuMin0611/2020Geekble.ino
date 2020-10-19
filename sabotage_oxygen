@@ -1,0 +1,93 @@
+#include <Adafruit_NeoPixel.h>
+#ifdef __AVR__
+ #include <avr/power.h>
+#endif
+#define PIN 10
+#define NUMPIXELS 144
+
+Adafruit_NeoPixel pixels(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800);
+
+#define DELAYVAL 500
+
+int i=0,oxygen3=0,oxygen4=0,cnt=0,trg=0,samsung=0;;
+
+void setup() {
+  
+#if defined(__AVR_ATtiny85__) && (F_CPU == 16000000)
+  clock_prescale_set(clock_div_1);
+#endif
+  pinMode(8,INPUT);
+  pinMode(7,INPUT);
+  pinMode(6,INPUT);
+  pinMode(5,INPUT);
+  pixels.begin();
+  pixels.show();
+  Serial.begin(9600); 
+}
+
+void loop() {
+  while(samsung == 0) {
+    if(digitalRead(5) == HIGH && trg == 0) {
+      for(int i=0; i<NUMPIXELS; i++) {
+        pixels.setPixelColor(i, pixels.Color(255,155,255));       
+        pixels.show();
+      }
+      Serial.println(digitalRead(5));
+    } else {
+      for(int i=0; i<NUMPIXELS; i++) {
+        pixels.setPixelColor(i, pixels.Color(0,0,0));       
+        pixels.show();
+      }
+    }
+
+    if(digitalRead(8) == HIGH && samsung == 0) {
+      Serial.println(digitalRead(8));
+      trg = 0;
+      oxygen3 = 0;
+      oxygen4 = 0;
+      for(cnt=0;cnt<30;cnt++) {
+        if(trg == 0) {
+          for(int i=0; i<NUMPIXELS; i++) {
+            pixels.setPixelColor(i, pixels.Color(255, 0, 0));
+            pixels.show();
+            if(digitalRead(7) == HIGH) {
+              oxygen3 = 1;
+              Serial.println(digitalRead(7));
+            }
+            if(digitalRead(6) == HIGH) {
+              oxygen4 = 1;
+              Serial.println(digitalRead(6));
+            }
+          }
+      
+          for(int i=0; i<NUMPIXELS; i++) {
+            pixels.setPixelColor(i, pixels.Color(0, 0, 0));
+            pixels.show();
+            if(digitalRead(7) == HIGH) {
+              oxygen3 = 1;
+              Serial.println(digitalRead(7));
+            }
+            if(digitalRead(6) == HIGH) {
+              oxygen4 = 1;
+              Serial.println(digitalRead(6));
+            }
+          }
+          if(oxygen3 == 1 && oxygen4 == 1) {
+            break;
+          }
+         }
+      }      
+        delay(900);
+      }
+    
+      if(cnt == 30) {
+        Serial.println("imposter's victory");
+        for(i=0; i<NUMPIXELS; i++) {
+          pixels.setPixelColor(i, pixels.Color(0,0,0));
+          pixels.show();
+        }
+        trg = 100;
+        samsung++;
+      }
+  }
+}
