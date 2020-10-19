@@ -1,0 +1,159 @@
+#include <DFRobotDFPlayerMini.h>
+#include <SoftwareSerial.h>
+
+
+SoftwareSerial MP3Module(11, 10);
+DFRobotDFPlayerMini MP3Player;
+int j;
+int i;
+
+void setup() 
+{
+ Serial.begin(9600);
+ MP3Module.begin(9600);
+ if (!MP3Player.begin(MP3Module))
+ pinMode(6, OUTPUT);
+ pinMode(5, OUTPUT);
+ pinMode(2, INPUT);
+ pinMode(12, OUTPUT);
+ pinMode(3, INPUT);
+
+ delay(1);
+ MP3Player.volume(20);
+}
+
+void loop()
+{
+  int readValue_1 = digitalRead(2);
+  Serial.println(readValue_1);
+  
+  if(readValue_1 == HIGH){
+  MP3Player.play(2);
+  delay(500);
+  
+    for(j=0; j<=150; j++){
+      
+      analogWrite(6, j);
+      analogWrite(5, j);
+      Serial.println(j);    
+      
+    }
+    for(j=150; j>=0; j--){
+      
+      analogWrite(6, j);
+      analogWrite(5, j);
+      Serial.println(j);  
+      
+    }
+     for(j=0; j<=150; j++){
+      
+      analogWrite(6, j);
+      analogWrite(5, j);
+      Serial.println(j);
+      
+    }
+    for(j=150; j>=0; j--){
+      
+      analogWrite(6, j);
+      analogWrite(5, j);
+      Serial.println(j);
+      
+    }
+     for(j=0; j<=150; j++){
+      
+      analogWrite(6, j);
+      analogWrite(5, j);
+      Serial.println(j);
+      
+    }
+    for(j=150; j>=0; j--){
+      
+      analogWrite(6, j);
+      analogWrite(5, j);
+      Serial.println(j);
+      
+    }
+    }else{
+      digitalWrite(6, LOW);
+      digitalWrite(5, LOW);
+    }
+     digitalWrite(6, LOW);
+     digitalWrite(5, LOW);
+
+     int readValue_2 = digitalRead(3);
+  Serial.println(readValue_2);
+  
+  if(readValue_2 == HIGH){
+    
+  MP3Player.play(3);
+  delay(500);
+  
+    for(i=0; i<=255; i++){
+      
+      analogWrite(12, i);
+      Serial.println(i);    
+      
+    }
+    for(i=255; i>=0; i--){
+      
+      analogWrite(12, i);
+      Serial.println(i);  
+      
+    }
+     for(i=0; i<=255; i++){
+      
+      analogWrite(12, i);
+      Serial.println(i);
+      
+    }
+    for(i=255; i>=0; i--){
+      
+      analogWrite(12, i);
+      Serial.println(i);
+      
+    }
+     for(i=0; i<=255; i++){
+      
+      analogWrite(12, i);
+      Serial.println(i);
+      
+    }
+    for(i=255; i>=0; i--){
+      
+      analogWrite(12, i);
+      Serial.println(i);
+      
+    }
+    for(i=0; i<=255; i++){
+      
+      analogWrite(12, i);
+      Serial.println(i);    
+      
+    }
+    for(i=255; i>=0; i--){
+      
+      analogWrite(12, i);
+      Serial.println(i);  
+      
+    }
+    for(i=0; i<=200; i++){
+      
+      analogWrite(12, i);
+      Serial.println(i);    
+      
+    }
+    for(i=70; i>=0; i--){
+      
+      analogWrite(12, i);
+      Serial.println(i);  
+      
+    }
+    }else{
+      digitalWrite(12, LOW);
+    }
+      digitalWrite(12, LOW);
+    
+  }
+
+
+ 
