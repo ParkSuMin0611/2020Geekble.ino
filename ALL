@@ -1,0 +1,245 @@
+#include <DFRobotDFPlayerMini.h>
+#include <SoftwareSerial.h>
+#include <Wire.h> 
+#include <LiquidCrystal_I2C.h> 
+#include <Servo.h>
+
+LiquidCrystal_I2C lcd(0x27,20,4); 
+SoftwareSerial MP3Module(19, 18);  //  mp3 모듈 핀 정하기(rx,tx)
+DFRobotDFPlayerMini MP3Player;
+Servo servo1;
+Servo servo2;
+Servo servo3;
+Servo servo4;
+Servo servo5;
+Servo servo6;
+Servo servo7;
+Servo servo8;
+Servo servo9;
+Servo servo10;
+Servo servo11;
+Servo servo12;
+Servo servo13;
+Servo servo14;
+Servo servo15;
+
+int angle = 0;
+
+unsigned long time_s = 0;
+unsigned long time_e = 0;
+
+boolean isON = false;
+boolean onR = false;
+boolean onG = false;
+  
+
+byte customChar[8] = {
+  B11111,
+  B11111,
+  B11111,
+  B11111,
+  B11111,
+  B11111,
+  B11111,
+  B11111
+};
+
+int i = 0, j = 0;
+int cnt = 0;
+int num = 0,s = 0;
+int m = 0;  // 미션 횟수 저장
+
+int SLAVE[4] = {1, 2, 3, 4};  // 마스터 보드
+
+void setup() {
+  
+  Wire.begin(); 
+
+  pinMode(52,OUTPUT);  // 보내는 통신
+  pinMode(53,INPUT);  // 받는 통신
+  
+  Serial.begin(9600);
+  
+  MP3Module.begin(9600);
+  
+  if (!MP3Player.begin(MP3Module))
+  pinMode(2, OUTPUT);
+  pinMode(3, OUTPUT);
+  pinMode(4, OUTPUT);
+  pinMode(5, OUTPUT);  // led
+  pinMode(6, INPUT_PULLUP);  // emergency
+  pinMode(7, INPUT_PULLUP);  // medbay
+  pinMode(8, INPUT_PULLUP);  // trash
+  pinMode(9, INPUT_PULLUP);  // trash
+  pinMode(10, INPUT_PULLUP);
+  pinMode(11, INPUT_PULLUP);
+  pinMode(12, INPUT_PULLUP);
+  pinMode(13, INPUT_PULLUP);
+  pinMode(14, INPUT_PULLUP);
+  pinMode(15, INPUT_PULLUP);
+  pinMode(16, INPUT_PULLUP);
+  pinMode(17, INPUT_PULLUP);  // 버튼1
+  pinMode(37, OUTPUT); // 네오픽셀 스트립
+  for(num=38; num<46; num++) {
+    pinMode(num, INPUT_PULLUP);
+  }  // 버튼2
+  for(num=46; num<52; num++) {
+    pinMode(num, INPUT);
+  }  // 키패드
+  
+  lcd.init();
+  lcd.backlight();
+  lcd.begin(20, 4);
+  lcd.createChar(0, customChar);
+  lcd.home();
+
+  servo1.attach(22);
+  servo2.attach(23);
+  servo3.attach(24);
+  servo4.attach(25);
+  servo5.attach(26);  // 서보모터
+
+  servo1.write(0);
+  servo2.write(0);
+  servo3.write(0);
+  servo4.write(0);
+  servo5.write(0);
+  
+  delay(1);
+  MP3Player.volume(20);
+}
+
+void loop() {
+  
+  if(digitalRead(6) == LOW){  // emergency
+  MP3Player.play(2);
+  delay(500);
+  
+    for(j=0; j<=150; j++){
+      analogWrite(2, j);
+      analogWrite(3, j);
+      Serial.println(j);    
+    }
+    for(j=150; j>=0; j--){
+      analogWrite(2, j);
+      analogWrite(3, j);
+      Serial.println(j);  
+    }
+     for(j=0; j<=150; j++){
+      analogWrite(2, j);
+      analogWrite(3, j);
+      Serial.println(j);
+    }
+    for(j=150; j>=0; j--){
+      analogWrite(2, j);
+      analogWrite(3, j);
+      Serial.println(j);
+    }
+     for(j=0; j<=150; j++){
+      analogWrite(2, j);
+      analogWrite(3, j);
+      Serial.println(j);
+    }
+    for(j=150; j>=0; j--){
+      analogWrite(2, j);
+      analogWrite(3, j);
+      Serial.println(j);
+    }
+  }else{   
+    digitalWrite(2, LOW);
+    digitalWrite(3, LOW);
+  }
+
+  
+  if(digitalRead(7) == LOW){  // medbay
+    
+  MP3Player.play(3);
+  delay(500);
+  
+    for(i=0; i<=255; i++){
+      analogWrite(4, i);
+      Serial.println(i);   
+    }
+    for(i=255; i>=0; i--){
+      analogWrite(4, i);
+      Serial.println(i);  
+    }
+     for(i=0; i<=255; i++){
+      analogWrite(4, i);
+      Serial.println(i);
+    }
+    for(i=255; i>=0; i--){
+      analogWrite(4, i);
+      Serial.println(i);
+    }
+     for(i=0; i<=255; i++){
+      analogWrite(4, i);
+      Serial.println(i);
+    }
+    for(i=255; i>=0; i--){
+      analogWrite(4, i);
+      Serial.println(i);
+    }
+    for(i=0; i<=255; i++){
+      analogWrite(4, i);
+      Serial.println(i);    
+    }
+    for(i=255; i>=0; i--){
+      analogWrite(4, i);
+      Serial.println(i);  
+    }
+    for(i=0; i<=200; i++){
+      analogWrite(4, i);
+      Serial.println(i);    
+    }
+    for(i=70; i>=0; i--){
+      analogWrite(4, i);
+      Serial.println(i);  
+    }
+  }else{
+      digitalWrite(4, LOW);
+  }
+
+  if(digitalRead(8) == LOW && digitalRead(9) == LOW) {  // 쓰레기버리기
+    digitalWrite(5, HIGH);
+  } else {
+    digitalWrite(5, LOW);
+  }
+
+  Serial.println(digitalRead(53));
+  
+  /*if(digitalRead(53) == HIGH) {
+    //delay(500);
+    //lcd.print("asdfasdf");
+    //lcd.write(byte(0));
+  }*/
+
+  if (Serial.available()) {
+    char e = Serial.read();
+    byte c = e - 48;
+    if (c < 5) {
+      // I2C 통신을 통한 전송 시작
+      Wire.beginTransmission(SLAVE[c-1]);
+      
+      Wire.endTransmission(SLAVE[c-1]);
+      delay(10);
+      // 슬레이브로 데이터 요구 및 수신 데이터 처리
+      i2c_communication(c-1); 
+      delay(10);
+    }
+  }
+  
+}
+
+void i2c_communication(int i) {
+  // 12 바이트 크기의 데이터 요청
+  Wire.requestFrom(SLAVE[i], 12); 
+  // 12 바이트 모두 출력할 때까지 반복
+  for (int j = 0 ; j < 12 ; j++) {  
+    // 수신 데이터 읽기
+    char c = Wire.read(); 
+    // 수신 데이터 출력
+    Serial.print(c); 
+  }
+  Serial.println();
+}
